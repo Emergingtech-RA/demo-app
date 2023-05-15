@@ -10,6 +10,12 @@ jobs:
   terrascan_job:
     runs-on: ubuntu-latest
     name: terrascan-action
+    permissions:
+      # required for all workflows
+      security-events: write
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
