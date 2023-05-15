@@ -52,7 +52,7 @@ jobs:
     - name: Build
       run: |-
         
-        docker build --tag "gcr.io/microservices-arch-demo/demo-app" -f demo-app/kubernetes/base/Dockerfile . --build-arg GITHUB_SHA="$GITHUB_SHA"
+        docker build --tag "gcr.io/microservices-arch-demo/demo-app" -f kubernetes/base/Dockerfile . --build-arg GITHUB_SHA="$GITHUB_SHA"
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
       with:
@@ -77,13 +77,13 @@ jobs:
       run: |-
         curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
         chmod u+x ./kustomize
-        cp kustomize demo-app/kubernetes/base/
+        cp kustomize kubernetes/base/
 
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
       run: |
       
-          cd demo-app/kubernetes/base
+          cd kubernetes/base
           ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE=gcr.io/$PROJECT_ID/$IMAGE
           ./kustomize build . | kubectl apply -f -
           kubectl rollout restart deployment/demo-app
