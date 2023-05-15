@@ -1,7 +1,7 @@
-# ./.github/workflows/staging-auto-pr.yaml
 name: Auto-PR Creation
 on:
-  create:
+  pull_request:
+    types: [closed]
     branches: ['development']
 
 jobs:
