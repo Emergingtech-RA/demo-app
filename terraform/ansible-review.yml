@@ -1,0 +1,22 @@
+- name: Review Terraform Configuration
+  hosts: localhost
+  gather_facts: false
+  vars:
+    terraform_dir: "./"
+    review_file: "terraform_review.txt"
+
+  tasks:
+    - name: Run Terraform Configuration Review
+      shell: |
+        terraform init -backend=false {{ terraform_dir }}
+        terraform plan -no-color -detailed-exitcode {{ terraform_dir }} > {{ review_file }} || true
+      register: review_output
+
+    - name: Review Terraform Configuration
+      debug:
+        var: review_output.stdout_lines
+
+    - name: Fail if Configuration Review has Errors
+      fail:
+        msg: "Terraform Configuration Review Failed"
+      when: review_output.rc != 0
